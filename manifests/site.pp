@@ -1,11 +1,6 @@
 $vcsbase = '/usr/local/lib/flint'
 $iocbase = "${vcsbase}/flint-ca"
 
-host { 'gateway.example.com':
-  ip           => '192.168.1.2',
-  host_aliases => 'gateway',
-}
-
 host { 'testioc.example.com':
   ip           => '192.168.1.3',
   host_aliases => 'testioc',
@@ -48,6 +43,11 @@ node 'gateway.example.com' {
 
 node 'testioc.example.com' {
   include apt
+
+  host { 'gateway.example.com':
+    ip           => '192.168.1.2',
+    host_aliases => 'gateway',
+  }
 
   apt::source { 'nsls2repo':
     location    => 'http://epics.nsls2.bnl.gov/debian/',
@@ -133,6 +133,11 @@ node 'testioc.example.com' {
 
 node 'client.example.com' {
   include apt
+
+  host { 'gateway.example.com':
+    ip           => '192.168.2.2',
+    host_aliases => 'gateway',
+  }
 
   apt::source { 'nsls2repo':
     location    => 'http://epics.nsls2.bnl.gov/debian/',
