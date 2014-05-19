@@ -21,6 +21,8 @@ test -x $DAEMON || exit 0
 
 set -e
 
+. /lib/lsb/init-functions
+
 # define default values
 SERVER_IP=192.168.2.2
 CLIENT_IP=192.168.1.255
@@ -39,6 +41,15 @@ export LOG_FILE
 GATEWAY_OPTS="-sip $SERVER_IP -pvlist gateway2.pvlist -cip $CLIENT_IP -signore $IGNORE_IP -archive -no_cache -home /epics/$NAME/ -log $LOG_FILE -prefix $PREFIX"
 PROCSERV_OPTS="--quiet --pidfile /var/run/$NAME.pid"
 
+check_status() {
+  if [ "$1" = "-q" ];then
+    status_of_proc -p "$PID" "procServ" "$IOC" 2>&1 >/dev/null
+  else
+    status_of_proc -p "$PID" "procServ" "$IOC"
+  fi
+  return $?
+}
+
 case "$1" in
   start)
         echo -n "Starting $DESC: "
@@ -50,6 +61,11 @@ case "$1" in
         start-stop-daemon --stop --pidfile /var/run/$NAME.pid --exec $PROCSERV
         rm -f /var/run/$NAME.pid
         echo "$NAME."
+        ;;
+  status)
+        echo -n "Status of gateway $NAME : "
+        check_status
+        exit $?
         ;;
   restart|force-reload)
         echo -n "Restarting $DESC: "
