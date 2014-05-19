@@ -14,17 +14,18 @@ host { 'client.example.com':
 node 'gateway.example.com' {
   include apt
 
-  apt::source { 'nsls2repo':
-    location    => 'http://epics.nsls2.bnl.gov/debian/',
-    release     => 'wheezy',
-    repos       => 'main contrib',
+  apt::source { 'controls repo':
+    location    => 'http://35.9.58.138:8082/',
+    release     => 'release-trunk',
+    repos       => 'main',
     include_src => false,
-    key         => 'BE16DA67',
-    key_source  => 'http://epics.nsls2.bnl.gov/debian/repo-key.pub',
+    key         => 'BC54A6DE',
+    key_source  => 'http://35.9.58.138:8082/repo_key.gpg',
   }
 
   package { 'epics-catools':
     ensure => installed,
+    require => Apt::Source['controls repo'],
   }
 
   package { 'build-essential':
@@ -33,12 +34,49 @@ node 'gateway.example.com' {
 
   package { 'epics-dev':
     ensure => installed,
+    require => Apt::Source['controls repo'],
   }
 
-  #  package { 'epics-cagateway':
-#    ensure => installed,
-#  }
-  Apt::Source['nsls2repo'] -> Package <| |>
+  package { 'epics-cagateway':
+    ensure => installed,
+    require => Apt::Source['controls repo'],
+  }
+
+  package { 'procServ':
+    ensure => installed,
+  }
+
+  file { '/etc/init.d/gateway2':
+    ensure => file,
+    source => '/vagrant/files/etc/init.d/gateway2',
+    owner  => root,
+    mode   => '0755',
+  }
+
+  file { '/epics':
+    ensure => directory,
+    owner  => root,
+    mode   => '0755',
+  }
+
+  file { '/epics/gateway_192.168.2.xxx':
+    ensure => directory,
+    owner  => root,
+    mode   => '0755',
+  }
+
+  file { '/epics/gateway_192.168.2.xxx/gateway2.pvlist':
+    ensure => file,
+    source => '/vagrant/files/epics/gateway_192.168.2.xxx/gateway2.pvlist',
+    owner  => root,
+    mode   => '0755',
+  }
+
+  service { 'gateway2':
+    ensure    => running,
+    enable    => true,
+    subscribe => File['/etc/init.d/gateway2'],
+  }
 }
 
 node 'testioc.example.com' {
