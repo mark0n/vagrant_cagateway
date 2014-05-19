@@ -1,0 +1,19 @@
+UAG(admins)     {vagrant}
+UAG(users)      {user1}
+UAG(experiments)        {exp1,exp2,client}
+
+ASG(DEFAULT) {
+  RULE(1,READ)
+}
+ASG(admins) {
+  RULE(1,READ)
+  RULE(1,WRITE,TRAPWRITE){
+    UAG(admins)
+  }
+}
+ASG(NSCL) {
+  RULE(1,READ)
+  RULE(1,WRITE,TRAPWRITE){
+    UAG(users,experiments)
+  }
+}

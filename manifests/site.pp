@@ -72,10 +72,22 @@ node 'gateway.example.com' {
     mode   => '0755',
   }
 
+  file { '/epics/gateway_192.168.2.xxx/gateway2.access':
+    ensure => file,
+    source => '/vagrant/files/epics/gateway_192.168.2.xxx/gateway2.access',
+    owner  => root,
+    mode   => '0755',
+  }
+
   service { 'gateway2':
     ensure    => running,
     enable    => true,
-    subscribe => File['/etc/init.d/gateway2'],
+    subscribe => [
+      Package['epics-cagateway'],
+      File['/etc/init.d/gateway2'],
+      File['/epics/gateway_192.168.2.xxx/gateway2.pvlist'],
+      File['/epics/gateway_192.168.2.xxx/gateway2.access'],
+    ],
   }
 }
 

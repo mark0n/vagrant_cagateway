@@ -1,4 +1,3 @@
 EVALUATION ORDER ALLOW, DENY
 
-.*      ALLOW
-!gateway2:.*   DENY FROM 192.168.2.2
+.*      ALLOW   NSCL
