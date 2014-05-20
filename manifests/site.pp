@@ -14,7 +14,7 @@ host { 'client.example.com':
 node 'gateway.example.com' {
   include apt
 
-  apt::source { 'controls repo':
+  apt::source { 'controls_repo':
     location    => 'http://35.9.58.138:8082/',
     release     => 'release-trunk',
     repos       => 'main',
@@ -25,32 +25,11 @@ node 'gateway.example.com' {
 
   package { 'epics-catools':
     ensure => installed,
-    require => Apt::Source['controls repo'],
+    require => Apt::Source['controls_repo'],
   }
 
-  package { 'build-essential':
-    ensure => installed,
-  }
-
-  package { 'epics-dev':
-    ensure => installed,
-    require => Apt::Source['controls repo'],
-  }
-
-  package { 'epics-cagateway':
-    ensure => installed,
-    require => Apt::Source['controls repo'],
-  }
-
-  package { 'procServ':
-    ensure => installed,
-  }
-
-  file { '/etc/init.d/gateway2':
-    ensure => file,
-    source => '/vagrant/files/etc/init.d/gateway2',
-    owner  => root,
-    mode   => '0755',
+  class { 'epics_gateway':
+    require => Apt::Source['controls_repo'],
   }
 
   file { '/epics':
@@ -59,34 +38,34 @@ node 'gateway.example.com' {
     mode   => '0755',
   }
 
-  file { '/epics/gateway_192.168.2.xxx':
+  file { '/epics/cagateway_192.168.2.xxx':
     ensure => directory,
     owner  => root,
     mode   => '0755',
   }
 
-  file { '/epics/gateway_192.168.2.xxx/gateway2.pvlist':
+  file { '/epics/cagateway_192.168.2.xxx/gateway2.pvlist':
     ensure => file,
     source => '/vagrant/files/epics/gateway_192.168.2.xxx/gateway2.pvlist',
     owner  => root,
     mode   => '0755',
   }
 
-  file { '/epics/gateway_192.168.2.xxx/gateway2.access':
+  file { '/epics/cagateway_192.168.2.xxx/gateway2.access':
     ensure => file,
     source => '/vagrant/files/epics/gateway_192.168.2.xxx/gateway2.access',
     owner  => root,
     mode   => '0755',
   }
 
-  service { 'gateway2':
-    ensure    => running,
-    enable    => true,
+  epics_gateway::gateway { '192.168.2.xxx':
+    server_ip   => '192.168.2.2',
+    client_ip   => '192.168.1.255',
+    pv_list     => 'gateway2.pvlist',
+    access_file => 'gateway2.access',
     subscribe => [
-      Package['epics-cagateway'],
-      File['/etc/init.d/gateway2'],
-      File['/epics/gateway_192.168.2.xxx/gateway2.pvlist'],
-      File['/epics/gateway_192.168.2.xxx/gateway2.access'],
+      File['/epics/cagateway_192.168.2.xxx/gateway2.pvlist'],
+      File['/epics/cagateway_192.168.2.xxx/gateway2.access'],
     ],
   }
 }
