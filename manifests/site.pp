@@ -32,40 +32,27 @@ node 'gateway.example.com' {
     require => Apt::Source['controls_repo'],
   }
 
-  file { '/epics':
+  file { '/etc/epics':
     ensure => directory,
     owner  => root,
     mode   => '0755',
   }
 
-  file { '/epics/cagateway_192.168.2.xxx':
-    ensure => directory,
-    owner  => root,
-    mode   => '0755',
-  }
-
-  file { '/epics/cagateway_192.168.2.xxx/gateway2.pvlist':
-    ensure => file,
-    source => '/vagrant/files/epics/gateway_192.168.2.xxx/gateway2.pvlist',
-    owner  => root,
-    mode   => '0755',
-  }
-
-  file { '/epics/cagateway_192.168.2.xxx/gateway2.access':
-    ensure => file,
-    source => '/vagrant/files/epics/gateway_192.168.2.xxx/gateway2.access',
-    owner  => root,
-    mode   => '0755',
+  # on production machines this directory might be under revision control
+  file { '/etc/epics/cagateway-192.168.2.xxx':
+    ensure  => directory,
+    source  => '/vagrant/files/etc/epics/cagateway-192.168.2.xxx',
+    recurse => true,
+    owner   => root,
+    mode    => '0755',
   }
 
   epics_gateway::gateway { '192.168.2.xxx':
-    server_ip   => '192.168.2.2',
-    client_ip   => '192.168.1.255',
-    pv_list     => 'gateway2.pvlist',
-    access_file => 'gateway2.access',
-    subscribe => [
-      File['/epics/cagateway_192.168.2.xxx/gateway2.pvlist'],
-      File['/epics/cagateway_192.168.2.xxx/gateway2.access'],
+    server_ip    => '192.168.2.2',
+    client_ip    => '192.168.1.255',
+    gw_params    => '-caputlog localhost:7004',
+    subscribe    => [
+      File['/etc/epics/cagateway-192.168.2.xxx'],
     ],
   }
 }
