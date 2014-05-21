@@ -28,6 +28,10 @@ node 'gateway.example.com' {
     require => Apt::Source['controls_repo'],
   }
 
+  package { 'ioclogserver':
+    ensure => installed,
+  }
+
   class { 'epics_gateway':
     require => Apt::Source['controls_repo'],
   }
@@ -48,10 +52,11 @@ node 'gateway.example.com' {
   }
 
   epics_gateway::gateway { '192.168.2.xxx':
-    server_ip    => '192.168.2.2',
-    client_ip    => '192.168.1.255',
-    gw_params    => '-caputlog localhost:7004',
-    subscribe    => [
+    server_ip => '192.168.2.2',
+    client_ip => '192.168.1.255',
+    caputlog  => true,
+    require   => Package['ioclogserver'],
+    subscribe => [
       File['/etc/epics/cagateway-192.168.2.xxx'],
     ],
   }
