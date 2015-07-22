@@ -14,13 +14,17 @@ host { 'client.example.com':
 node 'gateway.example.com' {
   include apt
 
-  apt::source { 'controls_repo':
-    location    => 'http://35.9.58.138:8082/',
-    release     => 'release-trunk',
-    repos       => 'main',
-    include_src => false,
-    key         => 'BC54A6DE',
-    key_source  => 'http://35.9.58.138:8082/repo_key.gpg',
+  apt::source { 'nsls2repo':
+    location => 'http://epics.nsls2.bnl.gov/debian/',
+    release  => 'wheezy',
+    repos    => 'main contrib',
+    include  => {
+      'src' => false,
+    },
+    key      => {
+      'id'     => '97D2B6FC0D3BCB4ABC56679C11B01C94D1BE1726',
+      'source' => 'http://epics.nsls2.bnl.gov/debian/repo-key.pub',
+    },
   }
 
   package { 'epics-catools':
@@ -71,12 +75,16 @@ node 'testioc.example.com' {
   }
 
   apt::source { 'nsls2repo':
-    location    => 'http://epics.nsls2.bnl.gov/debian/',
-    release     => 'wheezy',
-    repos       => 'main contrib',
-    include_src => false,
-    key         => 'BE16DA67',
-    key_source  => 'http://epics.nsls2.bnl.gov/debian/repo-key.pub',
+    location => 'http://epics.nsls2.bnl.gov/debian/',
+    release  => 'wheezy',
+    repos    => 'main contrib',
+    include  => {
+      'src' => false,
+    },
+    key      => {
+      'id'     => '97D2B6FC0D3BCB4ABC56679C11B01C94D1BE1726',
+      'source' => 'http://epics.nsls2.bnl.gov/debian/repo-key.pub',
+    },
   }
 
   class { 'epics_softioc':
@@ -148,8 +156,6 @@ node 'testioc.example.com' {
     require     => Vcsrepo[$vcsbase],
     subscribe   => Vcsrepo[$vcsbase],
   }
-
-  Apt::Source['nsls2repo'] -> Class['epics_softioc']
 }
 
 node 'client.example.com' {
@@ -161,12 +167,16 @@ node 'client.example.com' {
   }
 
   apt::source { 'nsls2repo':
-    location    => 'http://epics.nsls2.bnl.gov/debian/',
-    release     => 'wheezy',
-    repos       => 'main contrib',
-    include_src => false,
-    key         => '256355f9',
-    key_source  => 'http://epics.nsls2.bnl.gov/debian/repo-key.pub',
+    location => 'http://epics.nsls2.bnl.gov/debian/',
+    release  => 'wheezy',
+    repos    => 'main contrib',
+    include  => {
+      'src' => false,
+    },
+    key      => {
+      'id'     => '97D2B6FC0D3BCB4ABC56679C11B01C94D1BE1726',
+      'source' => 'http://epics.nsls2.bnl.gov/debian/repo-key.pub',
+    },
   }
 
   package { 'epics-catools':
