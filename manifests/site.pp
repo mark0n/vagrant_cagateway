@@ -28,16 +28,26 @@ node 'gateway.example.com' {
   }
 
   package { 'epics-catools':
-    ensure => installed,
-    require => Apt::Source['controls_repo'],
+    ensure  => installed,
+    require => [
+      Apt::Source['nsls2repo'],
+      Class['apt::update'],
+    ],
   }
 
   package { 'ioclogserver':
     ensure => installed,
+    require => [
+      Apt::Source['nsls2repo'],
+      Class['apt::update'],
+    ],
   }
 
   class { 'epics_gateway':
-    require => Apt::Source['controls_repo'],
+    require => [
+      Apt::Source['nsls2repo'],
+      Class['apt::update'],
+    ],
   }
 
   file { '/etc/epics':
@@ -89,6 +99,10 @@ node 'testioc.example.com' {
 
   class { 'epics_softioc':
     iocbase => $iocbase,
+    require => [
+      Apt::Source['nsls2repo'],
+      Class['apt::update'],
+    ],
   }
 
   package { 'git':
@@ -181,6 +195,9 @@ node 'client.example.com' {
 
   package { 'epics-catools':
     ensure  => installed,
-    require => Apt::Source['nsls2repo'],
+    require => [
+      Apt::Source['nsls2repo'],
+      Class['apt::update'],
+    ],
   }
 }
