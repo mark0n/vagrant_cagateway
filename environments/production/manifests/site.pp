@@ -56,23 +56,28 @@ node 'gateway.example.com' {
     mode   => '0755',
   }
 
+  file { '/etc/epics/cagateway':
+    ensure => directory,
+    owner  => root,
+    mode   => '0755',
+  }
+
   # on production machines this directory might be under revision control
-  file { '/etc/epics/cagateway-192.168.2.xxx':
+  file { '/etc/epics/cagateway/192.168.2.xxx':
     ensure  => directory,
-    source  => '/vagrant/environments/production/files/etc/epics/cagateway-192.168.2.xxx',
+    source  => '/vagrant/environments/production/files/etc/epics/cagateway/192.168.2.xxx',
     recurse => true,
     owner   => root,
     mode    => '0755',
   }
 
   epics_gateway::gateway { '192.168.2.xxx':
-    server_ip => '192.168.2.2',
-    client_ip => '192.168.1.255',
-    caputlog  => true,
-    require   => Package['ioclogserver'],
-    subscribe => [
-      File['/etc/epics/cagateway-192.168.2.xxx'],
-    ],
+    server_ip  => '192.168.2.2',
+    client_ip  => '192.168.1.255',
+    ignore_ips => ['192.168.2.2'],
+    caputlog   => true,
+    require    => Package['ioclogserver'],
+    subscribe  => File['/etc/epics/cagateway/192.168.2.xxx'],
   }
 }
 
