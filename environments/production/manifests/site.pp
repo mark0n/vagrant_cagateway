@@ -77,33 +77,18 @@ node 'gateway.example.com' {
 }
 
 node 'testioc.example.com' {
-  include apt
-
-  host { 'gateway.example.com':
-    ip           => '192.168.1.2',
-    host_aliases => 'gateway',
-  }
-
   apt::source { 'nsls2repo':
-    location => 'http://epics.nsls2.bnl.gov/debian/',
-    release  => 'wheezy',
-    repos    => 'main contrib',
-    include  => {
-      'src' => false,
-    },
-    key      => {
+    location      => 'http://epics.nsls2.bnl.gov/debian/',
+    release       => 'wheezy',
+    repos         => 'main contrib',
+    key           => {
       'id'     => '97D2B6FC0D3BCB4ABC56679C11B01C94D1BE1726',
       'source' => 'http://epics.nsls2.bnl.gov/debian/repo-key.pub',
     },
+    notify_update => true,
   }
 
-  class { 'epics_softioc':
-    iocbase => $iocbase,
-    require => [
-      Apt::Source['nsls2repo'],
-      Class['apt::update'],
-    ],
-  }
+  Class['apt::update'] -> Package <| |>
 
   package { 'git':
     ensure => installed,
@@ -114,6 +99,11 @@ node 'testioc.example.com' {
     provider => git,
     source   => 'https://github.com/diirt/flint.git',
     require  => Package['git'],
+  }
+
+  class { 'epics_softioc':
+    iocbase => $iocbase,
+    require => Vcsrepo[$vcsbase],
   }
 
   file { "${iocbase}/control":
@@ -127,6 +117,7 @@ node 'testioc.example.com' {
     bootdir     => '',
     consolePort => '4051',
     enable      => true,
+    run_make    => false,
     require     => File["${vcsbase}/flint-ca/control"],
     subscribe   => Vcsrepo[$vcsbase],
   }
@@ -151,7 +142,7 @@ node 'testioc.example.com' {
     bootdir     => '',
     consolePort => '4053',
     enable      => false,
-    require     => Vcsrepo[$vcsbase],
+    run_make    => false,
     subscribe   => Vcsrepo[$vcsbase],
   }
 
@@ -159,7 +150,7 @@ node 'testioc.example.com' {
     bootdir     => '',
     consolePort => '4053',
     enable      => false,
-    require     => Vcsrepo[$vcsbase],
+    run_make    => false,
     subscribe   => Vcsrepo[$vcsbase],
   }
 
@@ -167,9 +158,11 @@ node 'testioc.example.com' {
     bootdir     => '',
     consolePort => '4053',
     enable      => false,
-    require     => Vcsrepo[$vcsbase],
+    run_make    => false,
     subscribe   => Vcsrepo[$vcsbase],
   }
+
+  Apt::Source['nsls2repo'] -> Class['epics_softioc']
 }
 
 node 'client.example.com' {
