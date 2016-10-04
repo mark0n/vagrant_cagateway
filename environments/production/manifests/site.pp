@@ -59,7 +59,7 @@ node 'gateway.example.com' {
   # on production machines this directory might be under revision control
   file { '/etc/epics/cagateway-192.168.2.xxx':
     ensure  => directory,
-    source  => '/vagrant/files/etc/epics/cagateway-192.168.2.xxx',
+    source  => '/vagrant/environments/production/files/etc/epics/cagateway-192.168.2.xxx',
     recurse => true,
     owner   => root,
     mode    => '0755',
@@ -132,7 +132,7 @@ node 'testioc.example.com' {
   }
 
   file { '/etc/init.d/testcontroller':
-    source  => '/vagrant/files/etc/init.d/testcontroller',
+    source  => '/vagrant/environments/production/files/etc/init.d/testcontroller',
     owner   => 'root',
     group   => 'root',
     mode    => '0755',
