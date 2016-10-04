@@ -10,11 +10,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # please see the online documentation at vagrantup.com.
 
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "Wheezy7.0rc1Puppetlabs"
-
-  # The url from where the 'config.vm.box' box will be fetched if it
-  # doesn't already exist on the user's system.
-  config.vm.box_url = "http://puppet-vagrant-boxes.puppetlabs.com/debian-70rc1-x64-vbox4210.box"
+  config.vm.box = "puppetlabs/debian-8.2-64-puppet"
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
@@ -85,6 +81,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # #               Managed by Puppet.\n"
   # # }
   #
+  config.vm.provision "shell", inline: "apt-key del 4BD6EC30"
+  config.vm.provision "shell", inline: "wget -qO - https://apt.puppetlabs.com/pubkey.gpg | apt-key add -"
   config.vm.provision "shell", inline: "apt-get update -qq"
   config.vm.provision :puppet do |puppet|
     puppet.options = '--verbose'
