@@ -10,7 +10,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # please see the online documentation at vagrantup.com.
 
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "puppetlabs/debian-8.2-64-puppet"
+  config.vm.box = "debian/contrib-buster64"
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
@@ -81,9 +81,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # #               Managed by Puppet.\n"
   # # }
   #
-  config.vm.provision "shell", inline: "apt-key del 4BD6EC30"
-  config.vm.provision "shell", inline: "wget -qO - https://apt.puppetlabs.com/pubkey.gpg | apt-key add -"
   config.vm.provision "shell", inline: "apt-get update -qq"
+  config.vm.provision "shell", inline: "apt-get install -y puppet"
   config.vm.provision :puppet do |puppet|
     puppet.options = '--verbose'
     puppet.environment = "production"

@@ -1,10 +1,8 @@
 forge "https://forgeapi.puppetlabs.com"
 
-mod 'epics_gateway',
-  :git => 'https://konrad@stash.frib.msu.edu/scm/deploy/puppet_module_epics_gateway.git'
+mod 'mark0n/epics_gateway'
 
-mod 'epics_softioc',
-  :git => 'https://stash.frib.msu.edu/scm/deploy/puppet_module_epics_softioc.git'
+mod 'mark0n/epics_softioc'
 
 mod 'puppetlabs/apt'
 

@@ -15,15 +15,15 @@ node 'gateway.example.com' {
   include apt
 
   apt::source { 'nsls2repo':
-    location => 'http://epics.nsls2.bnl.gov/debian/',
-    release  => 'wheezy',
+    location => 'https://epicsdeb.bnl.gov/debian',
+    release  => 'buster',
     repos    => 'main contrib',
     include  => {
       'src' => false,
     },
     key      => {
-      'id'     => '97D2B6FC0D3BCB4ABC56679C11B01C94D1BE1726',
-      'source' => 'http://epics.nsls2.bnl.gov/debian/repo-key.pub',
+      'id'     => 'C49C2B881CF213FD91788DC4665B438AC7C8BFAE',
+      'source' => 'https://epicsdeb.bnl.gov/debian/repo-key.pub',
     },
   }
 
@@ -73,7 +73,7 @@ node 'gateway.example.com' {
 
   epics_gateway::gateway { '192.168.2.xxx':
     server_ip  => '192.168.2.2',
-    client_ip  => '192.168.1.255',
+    client_ip  => ['192.168.1.255'],
     ignore_ips => ['192.168.2.2'],
     caputlog   => true,
     require    => Package['ioclogserver'],
@@ -83,12 +83,12 @@ node 'gateway.example.com' {
 
 node 'testioc.example.com' {
   apt::source { 'nsls2repo':
-    location      => 'http://epics.nsls2.bnl.gov/debian/',
-    release       => 'wheezy',
+    location      => 'https://epicsdeb.bnl.gov/debian/',
+    release       => 'buster',
     repos         => 'main contrib',
     key           => {
-      'id'     => '97D2B6FC0D3BCB4ABC56679C11B01C94D1BE1726',
-      'source' => 'http://epics.nsls2.bnl.gov/debian/repo-key.pub',
+      'id'     => 'C49C2B881CF213FD91788DC4665B438AC7C8BFAE',
+      'source' => 'https://epicsdeb.bnl.gov/debian/repo-key.pub',
     },
     notify_update => true,
   }
@@ -118,13 +118,13 @@ node 'testioc.example.com' {
   }
 
   epics_softioc::ioc { 'control':
-    ensure      => running,
-    bootdir     => '',
-    consolePort => '4051',
-    enable      => true,
-    run_make    => false,
-    require     => File["${vcsbase}/flint-ca/control"],
-    subscribe   => Vcsrepo[$vcsbase],
+    ensure       => running,
+    bootdir      => '',
+    console_port => 4051,
+    enable       => true,
+    run_make     => false,
+    require      => File["${vcsbase}/flint-ca/control"],
+    subscribe    => Vcsrepo[$vcsbase],
   }
 
   file { '/etc/init.d/testcontroller':
@@ -144,27 +144,27 @@ node 'testioc.example.com' {
   }
 
   epics_softioc::ioc { 'phase1':
-    bootdir     => '',
-    consolePort => '4053',
-    enable      => false,
-    run_make    => false,
-    subscribe   => Vcsrepo[$vcsbase],
+    bootdir      => '',
+    console_port => 4053,
+    enable       => false,
+    run_make     => false,
+    subscribe    => Vcsrepo[$vcsbase],
   }
 
   epics_softioc::ioc { 'typeChange1':
-    bootdir     => '',
-    consolePort => '4053',
-    enable      => false,
-    run_make    => false,
-    subscribe   => Vcsrepo[$vcsbase],
+    bootdir      => '',
+    console_port => 4053,
+    enable       => false,
+    run_make     => false,
+    subscribe    => Vcsrepo[$vcsbase],
   }
 
   epics_softioc::ioc { 'typeChange2':
-    bootdir     => '',
-    consolePort => '4053',
-    enable      => false,
-    run_make    => false,
-    subscribe   => Vcsrepo[$vcsbase],
+    bootdir      => '',
+    console_port => 4053,
+    enable       => false,
+    run_make     => false,
+    subscribe    => Vcsrepo[$vcsbase],
   }
 
   Apt::Source['nsls2repo'] -> Class['epics_softioc']
@@ -179,15 +179,15 @@ node 'client.example.com' {
   }
 
   apt::source { 'nsls2repo':
-    location => 'http://epics.nsls2.bnl.gov/debian/',
-    release  => 'wheezy',
+    location => 'https://epicsdeb.bnl.gov/debian/',
+    release  => 'buster',
     repos    => 'main contrib',
     include  => {
       'src' => false,
     },
     key      => {
-      'id'     => '97D2B6FC0D3BCB4ABC56679C11B01C94D1BE1726',
-      'source' => 'http://epics.nsls2.bnl.gov/debian/repo-key.pub',
+      'id'     => 'C49C2B881CF213FD91788DC4665B438AC7C8BFAE',
+      'source' => 'https://epicsdeb.bnl.gov/debian/repo-key.pub',
     },
   }
 
