@@ -106,7 +106,7 @@ node 'testioc.example.com' {
     require  => Package['git'],
   }
 
-  class { 'epics_softioc':
+  class { 'epics':
     iocbase => $iocbase,
     require => Vcsrepo[$vcsbase],
   }
@@ -117,14 +117,16 @@ node 'testioc.example.com' {
     require => Vcsrepo[$vcsbase],
   }
 
-  epics_softioc::ioc { 'control':
-    ensure       => running,
-    bootdir      => '',
-    console_port => 4051,
-    enable       => true,
-    run_make     => false,
-    require      => File["${vcsbase}/flint-ca/control"],
-    subscribe    => Vcsrepo[$vcsbase],
+  epics::ioc { 'control':
+    ensure                    => running,
+    bootdir                   => '',
+    console_port              => 4051,
+    enable                    => true,
+    run_make                  => false,
+    run_make_after_pkg_update => false,
+    auto_restart_ioc          => false,
+    require                   => File["${iocbase}/control"],
+    subscribe                 => Vcsrepo[$vcsbase],
   }
 
   file { '/etc/init.d/testcontroller':
@@ -143,31 +145,37 @@ node 'testioc.example.com' {
     require    => File['/etc/init.d/testcontroller'],
   }
 
-  epics_softioc::ioc { 'phase1':
-    bootdir      => '',
-    console_port => 4053,
-    enable       => false,
-    run_make     => false,
-    subscribe    => Vcsrepo[$vcsbase],
+  epics::ioc { 'phase1':
+    bootdir                   => '',
+    console_port              => 4053,
+    enable                    => false,
+    run_make                  => false,
+    run_make_after_pkg_update => false,
+    auto_restart_ioc          => false,
+    subscribe                 => Vcsrepo[$vcsbase],
   }
 
-  epics_softioc::ioc { 'typeChange1':
-    bootdir      => '',
-    console_port => 4053,
-    enable       => false,
-    run_make     => false,
-    subscribe    => Vcsrepo[$vcsbase],
+  epics::ioc { 'typeChange1':
+    bootdir                   => '',
+    console_port              => 4053,
+    enable                    => false,
+    run_make                  => false,
+    run_make_after_pkg_update => false,
+    auto_restart_ioc          => false,
+    subscribe                 => Vcsrepo[$vcsbase],
   }
 
-  epics_softioc::ioc { 'typeChange2':
-    bootdir      => '',
-    console_port => 4053,
-    enable       => false,
-    run_make     => false,
-    subscribe    => Vcsrepo[$vcsbase],
+  epics::ioc { 'typeChange2':
+    bootdir                   => '',
+    console_port              => 4053,
+    enable                    => false,
+    run_make                  => false,
+    run_make_after_pkg_update => false,
+    auto_restart_ioc          => false,
+    subscribe                 => Vcsrepo[$vcsbase],
   }
 
-  Apt::Source['nsls2repo'] -> Class['epics_softioc']
+  Apt::Source['nsls2repo'] -> Class['epics']
 }
 
 node 'client.example.com' {

@@ -2,7 +2,7 @@ forge "https://forgeapi.puppetlabs.com"
 
 mod 'mark0n/epics_gateway'
 
-mod 'mark0n/epics_softioc'
+mod 'mark0n/epics'
 
 mod 'puppetlabs/apt'
 
