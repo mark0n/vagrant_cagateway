@@ -16,7 +16,7 @@ node 'gateway.example.com' {
 
   apt::source { 'nsls2repo':
     location => 'https://epicsdeb.bnl.gov/debian',
-    release  => 'buster',
+    release  => $facts['os']['distro']['codename'],
     repos    => 'main contrib',
     include  => {
       'src' => false,
@@ -84,7 +84,7 @@ node 'gateway.example.com' {
 node 'testioc.example.com' {
   apt::source { 'nsls2repo':
     location      => 'https://epicsdeb.bnl.gov/debian/',
-    release       => 'buster',
+    release       => $facts['os']['distro']['codename'],
     repos         => 'main contrib',
     key           => {
       'id'     => 'A6AFF5C400EBA6C56D246DA32581B38588D33D28',

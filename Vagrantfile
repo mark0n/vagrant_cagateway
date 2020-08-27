@@ -9,9 +9,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # options are documented and commented below. For a complete reference,
   # please see the online documentation at vagrantup.com.
 
-  # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "debian/contrib-buster64"
-
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
@@ -25,15 +22,25 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Bridged networks make the machine appear as another physical device on
   # your network.
   config.vm.define "gateway" do |gateway|
+    gateway.vm.box = "debian/contrib-buster64"
     gateway.vm.network :private_network, ip: "192.168.1.2", virtualbox__intnet: "controls"
     gateway.vm.network :private_network, ip: "192.168.2.2", virtualbox__intnet: "office"
     gateway.vm.hostname = "gateway.example.com"
   end
+
+  # Spin up box with
+  # vagrant up --no-provision testioc
+  # vagrant ssh testioc
+  # sudo apt-get install -y sysvinit-core
+  # exit
+  # vagrant reload --provision testioc
   config.vm.define "testioc" do |testioc|
+    testioc.vm.box = "debian/contrib-stretch64"
     testioc.vm.network :private_network, ip: "192.168.1.3", virtualbox__intnet: "controls"
     testioc.vm.hostname = "testioc.example.com"
   end
   config.vm.define "client" do |client|
+    client.vm.box = "debian/contrib-buster64"
     client.vm.network :private_network, ip: "192.168.2.3", virtualbox__intnet: "office"
     client.vm.hostname = "client.example.com"
   end
@@ -81,8 +88,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # #               Managed by Puppet.\n"
   # # }
   #
+  config.vm.provision "shell", inline: "wget -q -O /tmp/puppet.deb http://apt.puppetlabs.com/puppet6-release-$(lsb_release -c -s).deb"
+  config.vm.provision "shell", inline: "dpkg -i /tmp/puppet.deb"
   config.vm.provision "shell", inline: "apt-get update -qq"
-  config.vm.provision "shell", inline: "apt-get install -y puppet"
+  config.vm.provision "shell", inline: "apt-get install -y puppet-agent apt-transport-https"
   config.vm.provision :puppet do |puppet|
     puppet.options = '--verbose'
     puppet.environment = "production"
