@@ -22,7 +22,7 @@ node 'gateway.example.com' {
       'src' => false,
     },
     key      => {
-      'id'     => 'C49C2B881CF213FD91788DC4665B438AC7C8BFAE',
+      'id'     => 'A6AFF5C400EBA6C56D246DA32581B38588D33D28',
       'source' => 'https://epicsdeb.bnl.gov/debian/repo-key.pub',
     },
   }
@@ -87,7 +87,7 @@ node 'testioc.example.com' {
     release       => 'buster',
     repos         => 'main contrib',
     key           => {
-      'id'     => 'C49C2B881CF213FD91788DC4665B438AC7C8BFAE',
+      'id'     => 'A6AFF5C400EBA6C56D246DA32581B38588D33D28',
       'source' => 'https://epicsdeb.bnl.gov/debian/repo-key.pub',
     },
     notify_update => true,
@@ -186,7 +186,7 @@ node 'client.example.com' {
       'src' => false,
     },
     key      => {
-      'id'     => 'C49C2B881CF213FD91788DC4665B438AC7C8BFAE',
+      'id'     => 'A6AFF5C400EBA6C56D246DA32581B38588D33D28',
       'source' => 'https://epicsdeb.bnl.gov/debian/repo-key.pub',
     },
   }
